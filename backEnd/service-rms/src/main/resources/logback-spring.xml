@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="false">
+	<!-- 日志级别level:用来设置打印级别，大小写无关,从低到高顺序：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，默认是DEBUG -->
+	<springProperty scop="context" name="appName"
+					source="spring.application.name" defaultValue="bbt" />
+	<!-- 基础日志级别设置 -->
+	<springProperty scop="context" name="rootLevel"
+					source="bbt.logger.level" defaultValue="INFO" />
+	<!-- 日志目录设置 -->
+	<springProperty scop="context" name="log.path"
+					source="log.path" defaultValue="./logs" />
+	<!-- 有两个属性，name和value；其中name的值是变量的名称，value的值时变量定义的值。通过定义的值会被插入到logger上下文中。定义变量后，可以使“${}”来使用变量 -->
+	<!-- 日志基础路径 -->
+	<property name="log.path" value="${log.path}" />
+	<!-- 日志显示格式 -->
+	<property name="LOG_FORMAT"
+			  value="%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} [%thread] [%logger{50}] - %msg%n" />
+
+	<!-- appender用来格式化日志输出节点，有俩个属性name和class，class用来指定哪种输出策略，常用就是控制台输出策略和文件输出策略。 -->
+
+	<!-- 控制台打印日志的相关配置 -->
+	<appender name="STDOUT"
+			  class="ch.qos.logback.core.ConsoleAppender">
+		<!-- 日志格式 -->
+		<encoder>
+			<pattern>${LOG_FORMAT}</pattern>
+		</encoder>
+	</appender>
+
+	<!--debug级别日志输出器 -->
+	<appender name="FILE-DEBUG"
+			  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!--记录的日志文件的路径及文件名 -->
+		<file>${log.path}/debug.log</file>
+
+		<!--记录的日志级别 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+
+		<!--日志文件输出格式 -->
+		<encoder>
+			<pattern>${LOG_FORMAT}</pattern>
+		</encoder>
+
+		<!--日志记录器的滚动策略，按日期，按大小记录 -->
+		<rollingPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${log.path}/%d{yyyy-MM,aux}/debug.%d{yyyy-MM-dd}.%i.log.gz
+			</fileNamePattern>
+			<maxFileSize>100MB</maxFileSize>
+		</rollingPolicy>
+	</appender>
+
+	<!--error级别日志输出器 -->
+	<appender name="FILE-ERROR"
+			  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!--记录的日志文件的路径及文件名 -->
+		<file>${log.path}/error.log</file>
+
+		<!--记录的日志级别 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+
+		<!--日志文件输出格式 -->
+		<encoder>
+			<pattern>${LOG_FORMAT}</pattern>
+		</encoder>
+
+		<!--日志记录器的滚动策略，按日期，按大小记录 -->
+		<rollingPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${log.path}/%d{yyyy-MM,aux}/error.%d{yyyy-MM-dd}.%i.log.gz
+			</fileNamePattern>
+			<maxFileSize>100MB</maxFileSize>
+		</rollingPolicy>
+	</appender>
+
+	<!--记录排除debug级别外的所有其他日志级别的日志输出器 -->
+	<appender name="FILE-TOTAL"
+			  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!--记录的日志文件的路径及文件名 -->
+		<file>${log.path}/total.log</file>
+		<!--记录的日志级别 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>WARN</level>
+			<!-- onMatch="ACCEPT" 表示匹配该级别及以上，	"DENY" 表示不匹配该级别及以上 -->
+			<onMatch>DENY</onMatch>
+			<!-- onMismatch="ACCEPT" 表示匹配该级别以下，"DENY" 表示不匹配该级别以下的 -->
+			<onMismatch>ACCEPT</onMismatch>
+		</filter>
+
+		<!--日志文件输出格式 -->
+		<encoder>
+			<pattern>${LOG_FORMAT}</pattern>
+		</encoder>
+
+		<!--日志记录器的滚动策略，按日期，按大小记录 -->
+		<rollingPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${log.path}/%d{yyyy-MM,aux}/total.%d{yyyy-MM-dd}.%i.log.gz
+			</fileNamePattern>
+			<maxFileSize>100MB</maxFileSize>
+		</rollingPolicy>
+	</appender>
+	<!-- root节点是必选节点，用来指定最基础的日志输出级别，只有一个level属性 -->
+	<root level="${rootLevel}">
+		<springProfile name="dev,test,prod">
+			<appender-ref ref="FILE-ERROR" />
+			<appender-ref ref="FILE-DEBUG" />
+		</springProfile>
+		<appender-ref ref="STDOUT" />
+		<!-- <appender-ref ref="FILE-ERROR" /> -->
+		<appender-ref ref="FILE-TOTAL" />
+	</root>
+</configuration>

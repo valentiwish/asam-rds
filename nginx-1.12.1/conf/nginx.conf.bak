@@ -1,0 +1,90 @@
+#user  nobody;
+worker_processes  1;
+
+#error_log  logs/error.log;
+#error_log  logs/error.log  notice;
+#error_log  logs/error.log  info;
+
+#pid        logs/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    client_max_body_size 10m;  
+
+    #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+    #                  '$status $body_bytes_sent "$http_referer" '
+    #                  '"$http_user_agent" "$http_x_forwarded_for"';
+
+    #access_log  logs/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    #keepalive_timeout  0;
+    keepalive_timeout  65;
+
+    gzip on; 
+    gzip_static on;
+    gzip_disable "MSIE [1-6]\.";
+    gzip_vary on;
+    gzip_proxied expired no-cache no-store private auth;
+    gzip_buffers 4 16k;
+    gzip_comp_level 5;
+    gzip_types text/plain application/javascript text/css application/wasm application/xml application/json text/json text/javascript application/x-httpd-php image/jpeg 
+                 image/gif image/png;
+
+    #一定要关闭
+    autoindex off;
+
+    #公共配置
+    server {
+        listen       9005;
+        server_name  localhost;
+	#应用服务器映射本地目录;
+	 location ^~/ {
+            alias D:/Project/rms/frontend/;
+            error_page 405 =200 $uri;
+            try_files $uri $uri/ /preview.html;
+            expires 0;
+        }	
+        #权限服务
+	location ^~ /service_user/{
+           #重写路径
+           rewrite /service_user/(.*)$ /$1 break;
+           proxy_pass http://192.168.13.228:8081;
+           proxy_set_header Host $host;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+	#日志服务
+	 location ^~ /service_log/{
+           #重写路径
+           rewrite /service_log/(.*)$ /$1 break;
+           proxy_pass http://192.168.13.60:8185;
+           proxy_set_header Host $host;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+	#文件服务器配置
+	location ^~ /service_file{
+	    #重写路径
+	    rewrite /service_file/(.*)$ /$1 break;
+	    proxy_pass http://192.168.13.41:29109;
+	    proxy_set_header Host $host;
+	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+	#RMS服务
+	location ^~ /service_rms/{
+	    #重写路径
+	    rewrite /service_rms/(.*)$ /$1 break;
+	    proxy_pass http://192.168.13.228:8091;
+	    proxy_set_header Host $host;
+	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+    } 
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asam.system.mapper.MoudleDao">
+    <update id="updateByIds">
+        update sys_moudle r
+        <set>
+            <if test="state != null">state=#{state},</if>
+            <if test="enable != null">enable=#{enable}</if>
+        </set>
+        where r.id in
+        <foreach collection="list" item="data" index="index" open="(" separator="," close=")">
+            #{data}
+        </foreach>
+    </update>
+</mapper>

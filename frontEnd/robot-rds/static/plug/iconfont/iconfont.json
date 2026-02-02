@@ -1,0 +1,86 @@
+{
+  "id": "4116664",
+  "name": "robot",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "5633909",
+      "name": "charging-station",
+      "font_class": "charging-station",
+      "unicode": "ef63",
+      "unicode_decimal": 61283
+    },
+    {
+      "icon_id": "5634269",
+      "name": "parking",
+      "font_class": "parking1",
+      "unicode": "f066",
+      "unicode_decimal": 61542
+    },
+    {
+      "icon_id": "4894313",
+      "name": "xiaoyuanwang(youxian)shenqing",
+      "font_class": "xiaoyuanwangyouxianshenqing",
+      "unicode": "e715",
+      "unicode_decimal": 59157
+    },
+    {
+      "icon_id": "37061609",
+      "name": "xiaoyuanwang(youxian)shenqing-copy",
+      "font_class": "xiaoyuanwangyouxianshenqing-copy",
+      "unicode": "e716",
+      "unicode_decimal": 59158
+    },
+    {
+      "icon_id": "37058569",
+      "name": "parking-copy",
+      "font_class": "parking-copy",
+      "unicode": "e6f1",
+      "unicode_decimal": 59121
+    },
+    {
+      "icon_id": "37058578",
+      "name": "charging-pile-2-fill-copy-copy",
+      "font_class": "charging-pile-2-fill-copy-copy",
+      "unicode": "e6f2",
+      "unicode_decimal": 59122
+    },
+    {
+      "icon_id": "16560691",
+      "name": "智能科技-icon-AGV",
+      "font_class": "zhinengkeji-icon-9",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "38477982",
+      "name": "加号",
+      "font_class": "jiahao-copy-copy-copy",
+      "unicode": "f06b",
+      "unicode_decimal": 61547
+    },
+    {
+      "icon_id": "38477309",
+      "name": "加号-copy-copy",
+      "font_class": "jiahao-copy-copy",
+      "unicode": "f068",
+      "unicode_decimal": 61544
+    },
+    {
+      "icon_id": "4551252",
+      "name": "加号",
+      "font_class": "jiahao",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "38477899",
+      "name": "加号",
+      "font_class": "jiahao-copy",
+      "unicode": "f069",
+      "unicode_decimal": 61545
+    }
+  ]
+}

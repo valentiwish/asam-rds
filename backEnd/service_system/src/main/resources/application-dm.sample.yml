@@ -1,0 +1,39 @@
+# 服务环境配置
+spring:
+  datasource:
+    dynamic:
+      primary: service_user
+      datasource:
+        service_user:
+          driver-class-name: dm.jdbc.driver.DmDriver
+          url: jdbc:dm://192.168.13.65:5236?schema=SERVICE_SYSTEM
+          username: SERVICE_SYSTEM
+          password: Asam_ims&2024
+          type: com.alibaba.druid.pool.DruidDataSource
+      durid:
+        initial-size: 1
+        max-active: 20
+        min-idle: 1
+        max-wait: 60000
+  jpa:
+    database-platform: org.hibernate.dialect.DmDialect
+#1.如果是mybatis 直接在mybatis下增加该配置。  mybatis-plus
+mybatis-plus:
+  global-config:
+    db-config:
+      # 表名下划线命名默认true
+      table-underline: true
+      # 逻辑删除配置
+      # 1、删除前
+      logic-not-delete-value: 0
+      # 删除后
+      logic-delete-value: 1
+      # 2、数据库类型
+      db-type: DM
+      # 数据库表名的前缀，Oscar神通数据库、Dm达梦数据库必须配置，为了适配非mysql数据库，请添加上数据库名称
+      schema: SERVICE_SYSTEM
+  configuration:
+    # oracle数据库需配置JdbcType.NULL, 默认是Other
+    jdbc-type-for-null: 'null' #注意：单引号
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

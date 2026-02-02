@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport" />
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="format-detection" content="telephone=no">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta name="robots" content="noarchive">
+    <title></title>
+    <link rel="shortcut icon" href="/sysconf/source/favicon.ico">
+    <link rel="stylesheet" href="./index.css">
+    <script>
+      var GetQueryString = function(name){
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+      }
+      var token =GetQueryString("token");
+      if (token) {
+        localStorage.setItem("access_token", token);
+        window.location.href = baseUrl + window.location.pathname +window.location.hash;
+      } 
+    </script>
+  </head>
+  <body>
+    <img class="syslogo"src="/sysconf/source/sys-logo.png" alt="">
+    <div class="sysloginout" id="sysloginout">一键退出</div>
+
+    <div id="wrap">
+      <div class="base"></div>
+      <div class="earth">
+        <a-scene embedded stats="false" vr-mode-ui="enabled: false">
+          <a-sphere 
+            src="./lib/images/earth_atmos.jpg" 
+            radius="3.5" 
+            position="0 -0.2 -8"
+            > 
+             <a-animation attribute="rotation"
+                dur="30000"
+                fill="forwards"
+                to="0 360 0"
+                easing="linear"
+                repeat="indefinite"></a-animation>
+          </a-sphere>
+        </a-scene>
+      </div>
+      <div class="cube"></div>
+      <div class="centerpos">
+        <div class="item" url="http://121.89.241.134:39102/manager/" style="position: absolute;left:-330px;bottom:210px;">营收管理</div>
+      </div>
+    </div>
+  </body>
+  <script src="./jquery.min.js"></script>
+  <script src="./lib/aframe/aframe.min.js"></script>
+  <script src="/sysconf/config.js"></script>
+  <script src="./config.js"></script>
+  
+  <script>
+    $(function(){
+      var setScale = function(){
+        var scaleX = $(window).outerWidth() /1920;
+        $("#wrap").css({
+          transform:"scale("+scaleX+")"
+        })
+      }
+      $(window).on("resize",setScale);
+      setScale();
+
+        //渲染节点
+      if(window.sysConf){
+        var strArr = window.sysConf.map(function(j,i){
+          if(j.url){
+            return '<div class="item" url="'+j.url+'" ignoreToken = "'+j.ignoreToken+'" style="left:'+j.position[0]+'px;bottom:'+j.position[1]+'px;"><div><img src="./lib/images/'+j.icon+'"></div>'+j.name+'</div>'
+          }
+          else{
+            return '<div class="item" ignoreToken = "'+j.ignoreToken+'" style="left:'+j.position[0]+'px;bottom:'+j.position[1]+'px;"><div><img src="./lib/images/'+j.icon+'"></div>'+j.name+'</div>'
+          }
+          
+        });
+        $(".centerpos").html(strArr.join(""))
+      }
+      if(window._sysBaseConf){
+        document.title = window._sysBaseConf.name;
+      }
+    
+      $("body").on("click",".item",function(){
+        var url= $(this).attr("url"),ignoreToken = $(this).attr("ignoreToken") == 'true';
+        if(url){
+          if(url.match("http://") || url.match("https://")){
+              //redirectPage(url,ignoreToken);
+			  window.open(url);
+          }else{
+		     //fyy加 start
+             if(url=='manager'){
+              //redirectPage("http://127.0.0.1:8091",url,"/account/list",ignoreToken);//开发环境下用
+			  redirectPage(window.location.origin,url,"/account/list",ignoreToken);//打包环境下用
+            }else if(url=='mes'){
+              //redirectPage("http://127.0.0.1:8092",url,"/home",ignoreToken);//开发环境下用
+			  redirectPage(window.location.origin,url,"/home",ignoreToken);//打包环境下用
+            }else if(url=='wms'){
+			  //redirectPage("http://127.0.0.1:8093",url,"/home",ignoreToken);//开发环境下用
+			  redirectPage(window.location.origin,url,"/home",ignoreToken);//打包环境下用
+            }else  if(url=='aps'){
+			  //redirectPage("http://127.0.0.1:8094",url,"/apsSchedule/list",ignoreToken);//开发环境下用
+			  redirectPage(window.location.origin,url,"/apsSchedule/list",ignoreToken);//打包环境下用
+            }else  if(url=='qms'){
+			  //redirectPage("http://127.0.0.1:8095",url,"/home",ignoreToken);//开发环境下用
+			  redirectPage(window.location.origin,url,"/home",ignoreToken);//打包环境下用
+            }else  if(url=='tpm'){
+			  //redirectPage("http://127.0.0.1:8095",url,"/home",ignoreToken);//开发环境下用
+			  redirectPage(window.location.origin,url,"/equip/list",ignoreToken);//打包环境下用
+            }else  if(url=='rms'){
+			  // redirectPage("http://192.168.13.228:9090",url,"/home",ignoreToken);//开发环境下用
+			  redirectPage(window.location.origin,url,"/home",ignoreToken);//打包环境下用
+            }
+            else{
+              redirectPage(window.location.origin,url,"/account/list",ignoreToken);
+            }
+		     //fyy加 end
+			 // redirectPage(baseUrl+"/"+url,ignoreToken);  先注掉
+          }
+        }
+        else{
+          alert($(this).text() + " 正在维护中")
+        }
+      })
+      var rejectLogin = function(){
+        if(window._sysBaseConf && window._sysBaseConf.casclient && window._sysBaseConf.casclient.url){
+          window.location.replace(window._sysBaseConf.casclient.url +'?mode=loginout');
+        }
+      }
+      $("#sysloginout").on("click",rejectLogin)
+
+      if(!localStorage.getItem("access_token")){
+        rejectLogin()
+      }
+    //fyy改了方法
+      var redirectPage =function(ipPort,url,path,ignoreToken){
+	  	var redirecturl=ipPort+"/"+url+"#"+path;//开发环境下用
+        //var redirecturl=ipPort+"/syscenter/#appid="+url+"&path="+path;//打包环境下用
+        var urlParams  = new URL(redirecturl);
+        var newUrl = urlParams.origin + urlParams.pathname;
+        if(!newUrl.endsWith("\/") && !newUrl.match("iserver")){
+          newUrl = newUrl + "/"
+        }
+		 if(!ignoreToken){
+		  var token = localStorage.getItem('access_token');
+          newUrl = newUrl +  "?token=" + token ;
+        }
+		newUrl = newUrl + urlParams.hash;
+		window.open(newUrl);//另外界面打开  开发环境下用
+        //top.location.href= newUrl;	//本界面跳转  打包环境下用
+      }
+    });
+  
+  </script>
+</html>

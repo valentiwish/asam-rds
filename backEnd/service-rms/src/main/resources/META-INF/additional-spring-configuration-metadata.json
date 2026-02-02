@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "359Wms.agvInPlaceUrl",
+      "type": "java.lang.String",
+      "description": "Description for 359Wms.agvInPlaceUrl."
+  }
+] }

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.5.RELEASE</version>
+		<relativePath />
+	</parent>
+	<groupId>jar</groupId>
+	<artifactId>service_system</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>service_system</name>
+	<description>ServiceSystem project for Spring Boot</description>
+	<packaging>jar</packaging>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<swagger.version>2.8.0</swagger.version>
+		<mybatis-plus.version>3.4.2</mybatis-plus.version>
+		<spring.boot.admin.version>2.1.5</spring.boot.admin.version>
+		<springCloud.verison>Greenwich.SR2</springCloud.verison>
+		<springBoot.verison>2.1.15.RELEASE</springBoot.verison>
+		<docker.image.prefix>asam</docker.image.prefix>
+		<druid.version>1.1.23</druid.version>
+		<actable.version>1.4.9.RELEASE</actable.version>
+		<poi.version>5.2.0</poi.version>
+	</properties>
+	<dependencies>
+        <!--公用模块引用-->
+        <dependency>
+			<groupId>jar</groupId>
+			<artifactId>Springboot-Utils</artifactId>
+			<version>1.1.3.7</version>
+		</dependency>
+
+		<!-- cloud服务-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-consul-discovery</artifactId>
+		</dependency>
+
+		<!--spring-boot-admin -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<!-- 实体简写插件 -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.4</version>
+		</dependency>
+
+		<!-- mysql 连接 -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- 添加达梦依赖 -->
+		<dependency>
+			<groupId>com.dameng</groupId>
+			<artifactId>DmJdbcDriver18</artifactId>
+			<version>8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.dameng</groupId>
+			<artifactId>hibernate</artifactId>
+			<version>5.3</version>
+		</dependency>
+
+		<!-- 动态多数据源配置 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid-spring-boot-starter</artifactId>
+			<version>${druid.version}</version>
+		</dependency>
+
+		<!-- 引入阿里数据库连接池 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>1.1.6</version>
+		</dependency>
+
+		<!-- 热部署 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- Cloud的版本 -->
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${springCloud.verison}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- Boot版本 -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${springBoot.verison}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>2.3.2.RELEASE</version>
+				<executions>
+					<execution>
+						<!-- 作用应用使用 -->
+						<id>repackage</id>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+						<!-- jar 作为引用，与打包为可执行jar -->
+					<!--	<configuration>
+							<classifier>exec</classifier>
+						</configuration>-->
+					</execution>
+				</executions>
+			</plugin>
+			<!-- 自动源码打包 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.0</version><!--$NO-MVN-MAN-VER$ -->
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<version>1.4.3</version>
+				<configuration>
+					<repository>${docker.image.prefix}/${project.artifactId}</repository>
+					<!-- <repository>test</repository> -->
+					<buildArgs>
+						<JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+					</buildArgs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

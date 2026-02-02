@@ -1,0 +1,30 @@
+spring:
+  profiles:
+  # 配置数据源
+  datasource:
+    driver-class-name: dm.jdbc.driver.DmDriver
+    url: jdbc:dm://192.168.13.65:5236?schema=ROBOT_CORE
+    # url: jdbc:dm://192.168.13.65:5236/ROBOT_CORE
+    username: ROBOT_CORE
+    password: Asam_ims&2024
+    type: com.alibaba.druid.pool.DruidDataSource
+    jpa:
+      database-platform: org.hibernate.dialect.DmDialect
+#1.如果是mybatis 直接在mybatis下增加该配置。  mybatis-plus
+mybatis-plus:
+  global-config:
+    db-config:
+      # 表名下划线命名默认true
+      table-underline: true
+      # 逻辑删除配置
+      # 1、删除前
+      logic-not-delete-value: 0
+      # 删除后
+      logic-delete-value: 1
+      # 2、数据库类型
+      db-type: DM
+      # 数据库表名的前缀，Oscar神通数据库、Dm达梦数据库必须配置，为了适配非mysql数据库，请添加上数据库名称
+      schema: ROBOT_CORE
+  configuration:
+    # oracle数据库需配置JdbcType.NULL, 默认是Other
+    jdbc-type-for-null: 'null' #注意：单引号

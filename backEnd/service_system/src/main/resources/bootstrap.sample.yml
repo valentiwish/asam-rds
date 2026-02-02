@@ -1,0 +1,59 @@
+# 启动服务配置
+server:
+  port: 8081
+  servlet:
+    context-path: /
+#微服务注册，  监控客户端注册
+spring:
+  main:
+    allow-bean-definition-overriding: true #在spring中允许重名bean的覆盖问题
+  application:
+    name: service-user
+  cloud:
+    consul:
+      host: 127.0.0.1
+      port: 8500
+      discovery:
+        serviceName: ${spring.application.name}	# 注册到consul的服务名称
+        enabled: true   # 是否开启注册发现服务
+        register: true  # 是否需要注册到consul中
+        prefer-ip-address: true  #是否使用ip地址进行注册        #preferIpAddress: true
+        ip-address: 127.0.0.1 #  #指定服务监测的ip地址，服务部署后能访问到的ip地址 如果本机一个IP，可以这样写，本机有二个IP  需要明确是哪个IP 不能写127.0.0.1
+        instance-id: ${spring.application.name}:${spring.cloud.consul.discovery.ip-address}:${server.port}
+        #tags: vsersion=1.0
+        healthCheckInterval: 30s
+        health-check-path: ${server.servlet.context-path}/actuator/health
+---
+# 开放健康检查接口
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+
+#请求处理的超时时间
+#ribbon:
+#  ReadTimeout: 120000
+#开启熔断器，默认熔断功能为关闭状态
+feign:
+  hystrix:
+    enabled: true
+  client:    #feingn 默认配置,feingn 配置会覆盖ribbon配置
+    config:
+      default:
+        connectTimeout: 60000
+        readTimeout: 60000
+        #requestInterceptors: # 指定的是feign 自定义拦截器的相对路径
+        #- com.beans.feignconfg.FeignConfig
+#跨服务调用 token 传递配置
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 60000

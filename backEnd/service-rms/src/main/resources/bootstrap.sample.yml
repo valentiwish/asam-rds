@@ -1,0 +1,64 @@
+server:
+  port: 8091
+  servlet:
+    context-path: /
+spring:
+  application:
+    name: service-rms
+#服务注册，  监控客户端注册
+  cloud:
+    consul:
+      host: 127.0.0.1
+      port: 8500
+      discovery:
+        serviceName: ${spring.application.name}	# 注册到consul的服务名称
+        enabled: true   # 是否开启注册发现服务
+        register: true  # 不需要注册到consul中
+        # 在注册时使用 consul IP, 而不是 hostname
+        prefer-ip-address: true #ip-address: 192.168.13.237     #程序部署的ip地址，默认可以不用配置        
+        #ip-address: ${spring.cloud.client.ip-address} # 服务请求 ip
+        ip-address: 127.0.0.1 # 服务请求 ip
+        #preferIpAddress: true
+        healthCheckInterval: 15s  #配置健康检查时间间隔
+        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+        health-check-path: ${server.servlet.context-path}/actuator/health
+  activiti:
+    database-schema-update: true
+    check-process-definitions: false
+#-----------------------------------------------------------------------------------------------------------------------
+#开启熔断器，默认熔断功能为关闭状态
+feign:
+  hystrix:
+    enabled: true
+  client:    #feingn 默认配置,feingn 配置会覆盖ribbon配置
+    config:
+      default:
+        connectTimeout: 3000
+        readTimeout: 3000
+        #- com.beans.feignconfg.FeignConfig
+#跨服务调用 token 传递配置
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 60000
+---
+# 开放健康检查接口
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+#日志配置
+logging:
+  config: classpath:logback-spring.xml
+#配置token秘钥
+#tokenKey: asam
+swagger:
+  enabled: true

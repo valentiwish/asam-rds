@@ -1,0 +1,104 @@
+############################################
+# SpringBoot + Vue 前后端分离项目 .gitignore
+############################################
+
+########## 1) 版本控制/临时目录 ##########
+# SVN残留
+*.svn
+
+# Git 可能产生的临时文件
+*.orig
+*.rej
+*.swp
+*.swo
+
+########## 2) 操作系统杂项 ##########
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+########## 3) IDE / 编辑器 ##########
+# IntelliJ IDEA / JetBrains
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# VS Code
+.vscode/
+
+########## 4) 后端（Java / Maven / Spring Boot）构建产物 ##########
+# Maven/Gradle 构建输出
+**/target/
+**/build/
+
+# 打包产物
+**/*.jar
+**/*.war
+**/*.ear
+
+########## 5) 日志与运行时文件 ##########
+# 通用日志
+**/*.log
+**/logs/
+**/service_log/
+**/path_finding_log/
+
+# 其他常见运行时/缓存
+*.pid
+*.seed
+*.tmp
+*.cache
+
+########## 6) Spring Boot 配置##########
+# 本地实际配置（通常包含账号、密码、环境差异）
+**/src/main/resources/*.yml
+
+# 允许提交示例/模板配置
+!**/src/main/resources/*.example.yml
+!**/src/main/resources/*.sample.yml
+
+########## 7) 测试目录 ##########
+**/src/test/
+
+########## 8) 前端（Vue / Node） ##########
+# 依赖与构建产物
+**/node_modules/
+**/dist/
+
+# 常见缓存/日志
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+**/.npm/
+**/.yarn/
+**/.pnpm-store/
+**/.cache/
+
+########## 9) 项目里特定目录 ##########
+# 文档目录
+doc/
+
+# 工程特定目录
+startQuick/
+
+# frontEnd 下的 rms 目录
+frontEnd/rms/
+
+# 忽略 consul 可执行文件
+backEnd/consul/*.exe
+
+########## 10) 可选：环境变量/密钥文件（推荐） ##########
+# .env
+# .env.*
+# *.pem
+# *.key
+# *.keystore
+# *.jks
+
+############################################
+# 结束
+############################################

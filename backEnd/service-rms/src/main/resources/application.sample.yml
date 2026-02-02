@@ -1,0 +1,188 @@
+spring:
+  # 环境 mysql|dm
+  profiles:
+    active: mysql
+  #    active: dm
+  jackson:
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        # 取消小驼峰到下划线映射(加上这个)
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 15
+    timeout: 2000
+    #password: asam@123123
+    password:
+    jedis:
+      pool:
+        max-active: 32  #连接池最大连接数（使用负值表示没有限制）
+        max-idle: 200 # 最大空闲连接数
+        min-idle: 4  #最小空闲连接数
+    lettuce:
+      max-active: 32  #连接池最大连接数(使用负值表示没有限制) 默认为8
+      max-idle: 200 # 最大空闲连接数
+      min-idle: 4  #最小空闲连接数
+      max-wait: 10 #连接池最大阻塞等待时间(使用负值表示没有限制) 默认为-1
+#  influx:
+#    url: http://127.0.0.1:8096
+#    userName: root
+#    password: 123456
+#    database: test
+#    retention_policy: default
+#    retention_policy_time: 1000d
+# ----------------------------------------------------------------------------------------------------------------------
+# mybatis-plus配置
+mybatis-plus:
+  configuration:
+    # 是否开启， A_COLUMN（下划线命名）议不开启，原因：数据库字段与实体字段一致性原则
+    call-setters-on-nulls: true # 返回map时true: 到 aColumn（驼峰命名） 的类似映射
+    map-underscore-to-camel-case: true     #建当查询数据为空时字段返回为null,false:不加这个查询数据为空时，字段将被隐藏
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml,classpath:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml
+# -------------------------------------------数据推送、定时器、socketIO、文件服务等------------------------------
+# 1、数据推送
+asam:
+  pusher:
+    url: 192.168.13.228:7003/
+    api: open/pusher
+    #    businessTopic: MES359/businessData
+    businessTopic: AGV/businessData
+    dataTopic: AGV/realTimeData
+    appId: asam
+    appSecret: asam
+  mqtt:
+    #    active: inPlant #中控
+    active: king #亚控
+    offset: true  #是否配置偏移使能
+    retryinterval: 3000   #重试间隔 ms
+    retrynum: 3   #重试次数
+    username: admin
+    password: admin
+    url: tcp://192.168.13.98:1883
+    client:
+      inId: WmsGet
+      outId: S_KIO_Project
+    topic_push: #下发
+      Task_Push
+    stateTopic: #订阅
+      readdata_S_KIO_Project
+    setTopic: #下发，亚控固定格式
+      setdata_S_KIO_Project
+    #359九分厂自动门配置
+    inPlant_topic_push: #中控主题-下发
+      SUB1
+    inPlant_topic_subscribe: #中控主题-订阅
+      HX
+    #7210厂自动门配置
+    devicead:
+      topic: datachange_S_KIO_Project1
+    broker:
+      topic: topic22
+    default:
+      topic: hellop
+    setResult:
+      setdata_result_S_KIO_Project_38901MOMPushData
+    queryTopic:
+      query_S_KIO_Project
+    queryResultTopic:
+      query_result_S_KIO_Project_38901MOM
+    whoQ: 38901MOM
+
+# 2、定时器
+scheduling:
+  enabled: true
+  dailyWorkHourStats: 0 0 1 * * ?
+  equipMaintainPlan: 0 0 1 * * ?
+  # 3、权限角色
+jidirole:
+  baseSupportCenterLeader: "base_support_center_leader"
+  baseSupportCenterTech: "base_support_center_tech"
+# 4、file文件
+file:
+  upload:
+    url: http://localhost:29109
+  saveVideo: "D:/359jiekou/359video/saveVideo/"
+  savephoto: "D:/359jiekou/359video/savePhoto/"
+  tmpVideo: "D:/359jiekou/359video/tmpVideo/"
+# 5、调度算法
+data:
+  serverIP: "192.168.13.228"
+  pathPlanningAlgorithmUrl: "http://192.168.13.228:8010/startPathPlanningTask/"
+# 6、接口
+otherSystem:
+  #8610Mes
+  #    syncWaybillStatusToMesUrl: "http://10.125.5.235:8380/n2base-osb/http/interface/agv/UpdateAgvTaskStatus"
+  #    syncWaybillStatusToMesUrl: "http://192.168.10.198:8088/agvTask/updateAgvTask"
+  #8610 WMS
+  #syncWaybillStatusToWmsUrl: "http://10.125.190.51:8087/mesApi/pushAgvStatus"
+  #389 7210 WMS
+  syncWaybillStatusToWmsUrl: "http://10.158.11.6:18088/agvTask/updateStatus"
+    # 359九分厂MES
+  #    syncWaybillStatusToMesUrl: "http://192.168.10.50:8186/mesApi/pushAgvStatus"
+  # 41所产线药盒二期
+  #    syncWaybillStatusToMesUrl: "http://20.1.12.210:8088/aplAgvTask/agvUpdateStatusTask"
+  # 359厂十分厂三台重载喷涂MES
+  syncWaybillStatusToMesUrl: "http://192.168.10.198:8186/agvApi/pushAgvStatus"
+  8610Rms:
+    registerWriteAddress: 1     #寄存器写入地址
+  #359Wms
+  #syncWaybillStatusToOtherSystemUrl: "http://192.168.10.198:8088/agvTask/updateAgvTask"
+
+359Wms:
+  agvInPlaceUrl: "http://192.168.10.198:8088/agvTask/onAgvInPlace"
+  agvDownPlaceUrl: "http://192.168.10.198:8088/agvTask/downAgvInPlace"
+  updateAgvTaskUrl: "http://192.168.10.198:8088/agvTask/updateAgvTask"
+# 7、dms
+dms:
+  port: 19206
+
+# 8、项目名称: 8610立体仓储及机器人转运项目；359厂复合材料法兰件自动热压设备项目；359厂外防热自动刮涂成型系统项目：西安航天自动化车间轻载辊筒；光通信多机器人调度测试；41所点火药盒自动化生产单元(二期)
+project:
+  name: "光通信多机器人调度测试"
+# 10、socket
+socket.parseTest: true
+#socket.defaultPort: 9005
+socket.tcp: true
+socket.heart: false  #心跳检测按照秒进行检测，默认按照分钟进行检测
+client.readTest: true # 客户端接受信息测试接口是否开启
+client.enableFirstSendMsg: true # 客户端第一次链接发送信息
+client.firstSendAsciiMsg: sdfsdfsdfsdfds # 客户端第一次链接发送信息
+
+#11、设备
+equipment:
+  #是否智能充电桩
+  isIntelligentChargingStation: false
+  #电梯
+  elevator:
+    #电梯通信协议类型
+    communicationType: "TiBOSHI TCP"
+
+#WebService接口地址
+service:
+  tibco:
+    #接口名称：bizOperation,  ESB所在机器IP,  ESB所在机器端口，默认：40284
+    url: http://10.173.14.3:40274/Services/MFT_Service/intfBizOperation-service.serviceagent/intfwsBizOperationEndpoint0/
+  liuhua:
+    url: 10.32.31.200:8088
+    apiname: /portal/rs/Vulcanization/workshop/list
+  daxing: #三车间大型产线计划下发
+    url: http://10.158.30.20/WebServiceAsp.asmx?wsdl
+  line03:
+    url: http://127.0.0.1:8082      # 3车间产线
+  hanfeng:
+    url: http://127.0.0.1:8081/      # 3车间产线
+  jlagv:
+    url: http://127.0.0.1:8082
+  agv:
+    url: 10.158.13.10:8123
