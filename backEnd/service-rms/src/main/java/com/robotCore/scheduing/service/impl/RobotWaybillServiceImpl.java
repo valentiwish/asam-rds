@@ -434,8 +434,8 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
         QueryWrapper<RobotWaybill> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(ObjectUtil.isNotEmpty(robotName), RobotWaybill::getRobotName, robotName);
         wrapper.lambda().eq(ObjectUtil.isNotEmpty(waybillStatus), RobotWaybill::getWaybillStatus, waybillStatus)
-                .or().eq( RobotWaybill::getWaybillStatus, 6)
-                .or().eq( RobotWaybill::getWaybillStatus, 7);
+                .or().eq(RobotWaybill::getWaybillStatus, 6)
+                .or().eq(RobotWaybill::getWaybillStatus, 7);
         return list(wrapper).size() > 0 ? list(wrapper).get(0) : null;
     }
 
@@ -800,7 +800,8 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                     modbusIp = parameter.getValue();
                 }
                 if ("port".equals(parameter.getId())) {
-                    modbusPort = Integer.parseInt(parameter.getValue());;
+                    modbusPort = Integer.parseInt(parameter.getValue());
+                    ;
                 }
                 if ("ipSlaveId".equals(parameter.getId())) {
                     ipSlaveId = Integer.parseInt(parameter.getValue());
@@ -2054,7 +2055,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
             RobotWaybillResultVO waybillExecuteResult = getWaybillExecuteResult(mesWaybillId, wmsWaybillId);
             if (waybillExecuteResult != null) {
                 String jsonData = JSON.toJSONString(waybillExecuteResult, SerializerFeature.DisableCircularReferenceDetect);
-                log.info("RMS向第三方系统同步运单状态的数据:{}",jsonData);
+                log.info("RMS向第三方系统同步运单状态的数据:{}", jsonData);
                 try {
                     if (mesWaybillId != null && wmsWaybillId != null) {
                         //同步运单状态到MES
@@ -2118,7 +2119,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                     log.info("同步运单状态到第三方系统失败：{}", e.getMessage());
                     //设置运单执行状态
                     RobotWaybill robotWaybill = getById(waybillExecuteResult.getWaybillId());
-                    setWaybillResult(robotWaybill,RobotWaybillStatusEnum.TERMINATE.getCode(),e.getMessage());
+                    setWaybillResult(robotWaybill, RobotWaybillStatusEnum.TERMINATE.getCode(), e.getMessage());
                     robotTaskLogService.saveSyncMesWaybill(waybillExecuteResult, mesWaybillId, wmsWaybillId, currentServerIp, false, e.getMessage());
                     throw new Exception("同步运单状态到第三方系统失败！");
                 }
@@ -2840,11 +2841,11 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                         // 8 执行自定义动作（leo add）
                         if (robotRunDTO.getInstruction().equals("自定义动作")) {
 //                            if (taskListStatus == 4) {
-                                // 自定义动作，调用方法
-                                boolean executed = executeCustomAction(robotRunDTO);
-                                if (executed) {
-                                    log.info("机器人{}自定义动作执行成功！", vehicle);
-                                }
+                            // 自定义动作，调用方法
+                            boolean executed = executeCustomAction(robotRunDTO);
+                            if (executed) {
+                                log.info("机器人{}自定义动作执行成功！", vehicle);
+                            }
 //                            }
 
                         }
@@ -3136,10 +3137,10 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
     }
 
     //设置任务中的动作指令是否被执行
-    Map<String,Boolean> executedConcurrentHashMap = new ConcurrentHashMap<>();
+    Map<String, Boolean> executedConcurrentHashMap = new ConcurrentHashMap<>();
 
     //由于多个机器人遇到路径冲突时，需要重新惊醒路径规划，因此要禁止后续的子任务不能被多次执行
-    Map<String,Boolean> queryExecutedConcurrentHashMap = new ConcurrentHashMap<>();
+    Map<String, Boolean> queryExecutedConcurrentHashMap = new ConcurrentHashMap<>();
 
 
     /**
@@ -3254,6 +3255,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
 
     /**
      * 根据站点名称获取当前站点所在区域对应的中心点
+     *
      * @param currentPoint
      * @return
      * @throws IOException
@@ -3276,6 +3278,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
 
     /**
      * 获取自动门设备
+     *
      * @param endPort
      */
     @Override
@@ -3301,6 +3304,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
 
     /**
      * 打开烘箱
+     *
      * @param robotWaybill
      * @param iotEquipment
      * @return
@@ -3330,7 +3334,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                 //通过MQTT方式
                 if ("MQTT".equals(iotEquipment.getCommunicationType())) {
                     //打开烘箱门
-                   ioTEquipmentService.controlOvenDoor(iotEquipment.getEquipmentCode(), true);
+                    ioTEquipmentService.controlOvenDoor(iotEquipment.getEquipmentCode(), true);
                     //使用 Instant 和 Duration 来精确计算时间
                     final Instant startTime = Instant.now();
                     final Duration timeout = Duration.ofMinutes(1);
@@ -3398,6 +3402,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
 
     /**
      * 关闭烘箱门
+     *
      * @param automaticDoor
      */
     @Override
@@ -3482,7 +3487,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                             }
                         }
                     }
-                } catch(Exception e){
+                } catch (Exception e) {
                     log.error("自动门处理发生异常: ", e);
                     setTaskFailData(robotWaybill.getId(), robotWaybill.getId(), robotWaybill.getRobotName(), "自动门处理发生异常！");
                     return false;
@@ -3495,6 +3500,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
 
     /**
      * 打开自动门
+     *
      * @param robotWaybill
      * @param automaticDoor
      * @return
@@ -3517,7 +3523,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
             //如果轮询五次自动门不在线
             if (!isOnline) {
                 log.error("自动门不在线或者自动门没设置为远程状态！");
-                setTaskFailData(robotWaybill.getId(), robotWaybill.getId(), robotWaybill.getRobotName(), "自动门" + automaticDoor.getEquipmentCode() +"不在线!");
+                setTaskFailData(robotWaybill.getId(), robotWaybill.getId(), robotWaybill.getRobotName(), "自动门" + automaticDoor.getEquipmentCode() + "不在线!");
                 return false;
             } else {
                 //通过MQTT方式关闭自动门
@@ -3539,7 +3545,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                         publishRTValue.setValue("1");
                         publishRTValues.add(publishRTValue);
                         sendMessage.setRTValue(publishRTValues);
-                        log.info("中控SCADA下发开门任务，下发指令{}",sendMessage);
+                        log.info("中控SCADA下发开门任务，下发指令{}", sendMessage);
                         mqttProcess.publish(inPlantTopicPush, sendMessage);
                         Thread.sleep(1000);
 
@@ -3565,12 +3571,12 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                         //根据卷帘门Id获取开门变量
                         //第一次下发
                         String sendData = ioTEquipmentService.commandSendPackage(automaticDoor.getOpen(), true, 0);
-                        log.info("亚控SCADA下发开门任务，下发指令{}",sendData);
+                        log.info("亚控SCADA下发开门任务，下发指令{}", sendData);
                         mqttGateway.sendToMqtt(setSubTopic, sendData);
                         Thread.sleep(1000);
                         //第二次下发初始化
                         String sendDataInit = ioTEquipmentService.commandSendPackage(automaticDoor.getOpen(), false, 0);
-                        log.info("亚控SCADA下发开门任务，下发指令{}",sendDataInit);
+                        log.info("亚控SCADA下发开门任务，下发指令{}", sendDataInit);
                         mqttGateway.sendToMqtt(setSubTopic, sendDataInit);
                     }
 
@@ -3581,28 +3587,28 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                     while (true) {
                         // 获取当前数据
                         //获取redis存储的自動門的訂閱消息
-                        Map<String, Integer> scadaMessagesMap = (Map<String, Integer>)redisUtil.stringWithGet("topic_HX_msg");
+                        Map<String, Integer> scadaMessagesMap = (Map<String, Integer>) redisUtil.stringWithGet("topic_HX_msg");
                         //todo 业务处理
                         // 检查是否匹配,即门是否完全打开
-                        String openStatusStr = (String)redisUtil.stringWithGet(automaticDoor.getOpenEnd());
+                        String openStatusStr = (String) redisUtil.stringWithGet(automaticDoor.getOpenEnd());
                         if (Boolean.parseBoolean(openStatusStr)) {
                             log.info("自动门已经完全打开，可以通行!");
                             return true;
                         }
 
                         if (HXPositionNumConstant.OVEN_1_NUMBER.equals(automaticDoor.getEquipmentCode())) {
-                            if (((scadaMessagesMap.get(HXPositionNumConstant.OVEN_1_DOOR_1_OPEN_END_1)== 1)
-                                    || (scadaMessagesMap.get(HXPositionNumConstant.OVEN_1_DOOR_1_OPEN_END_2)== 1))
-                                    && (((scadaMessagesMap.get(HXPositionNumConstant.OVEN_1_DOOR_2_OPEN_END_1)== 1))
-                                    || (scadaMessagesMap.get(HXPositionNumConstant.OVEN_1_DOOR_2_OPEN_END_2)== 1))) {
+                            if (((scadaMessagesMap.get(HXPositionNumConstant.OVEN_1_DOOR_1_OPEN_END_1) == 1)
+                                    || (scadaMessagesMap.get(HXPositionNumConstant.OVEN_1_DOOR_1_OPEN_END_2) == 1))
+                                    && (((scadaMessagesMap.get(HXPositionNumConstant.OVEN_1_DOOR_2_OPEN_END_1) == 1))
+                                    || (scadaMessagesMap.get(HXPositionNumConstant.OVEN_1_DOOR_2_OPEN_END_2) == 1))) {
                                 log.info("自动门已经完全打开，可以通行!");
                                 return true;
                             }
                         } else if (HXPositionNumConstant.OVEN_2_NUMBER.equals(automaticDoor.getEquipmentCode())) {
-                            if (((scadaMessagesMap.get(HXPositionNumConstant.OVEN_2_DOOR_1_OPEN_END_1)== 1)
-                                    || (scadaMessagesMap.get(HXPositionNumConstant.OVEN_2_DOOR_1_OPEN_END_2)== 1))
-                                    && (((scadaMessagesMap.get(HXPositionNumConstant.OVEN_2_DOOR_2_OPEN_END_1)== 1))
-                                    || (scadaMessagesMap.get(HXPositionNumConstant.OVEN_2_DOOR_2_OPEN_END_2)== 1))) {
+                            if (((scadaMessagesMap.get(HXPositionNumConstant.OVEN_2_DOOR_1_OPEN_END_1) == 1)
+                                    || (scadaMessagesMap.get(HXPositionNumConstant.OVEN_2_DOOR_1_OPEN_END_2) == 1))
+                                    && (((scadaMessagesMap.get(HXPositionNumConstant.OVEN_2_DOOR_2_OPEN_END_1) == 1))
+                                    || (scadaMessagesMap.get(HXPositionNumConstant.OVEN_2_DOOR_2_OPEN_END_2) == 1))) {
                                 log.info("自动门已经完全打开，可以通行!");
                                 return true;
                             }
@@ -3653,6 +3659,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
 
     /**
      * 关闭自动门
+     *
      * @param automaticDoor
      */
     @Override
@@ -3719,12 +3726,12 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                     //根据卷帘门Id获取开门变量
                     //第一次下发
                     String sendData = ioTEquipmentService.commandSendPackage(automaticDoor.getClose(), true, 0);
-                    log.info("亚控SCADA下发关门任务，下发指令{}",sendData);
+                    log.info("亚控SCADA下发关门任务，下发指令{}", sendData);
                     mqttGateway.sendToMqtt(setSubTopic, sendData);
                     Thread.sleep(1000);
                     //第二次下发初始化
                     String sendDataInit = ioTEquipmentService.commandSendPackage(automaticDoor.getClose(), false, 0);
-                    log.info("亚控SCADA下发关门任务，下发指令{}",sendDataInit);
+                    log.info("亚控SCADA下发关门任务，下发指令{}", sendDataInit);
                     mqttGateway.sendToMqtt(setSubTopic, sendDataInit);
                 }
 
@@ -3736,30 +3743,30 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                 while (true) {
                     // 获取当前数据
                     //获取redis存储的自動門的訂閱消息
-                    Map<String, Integer> scadaMessagesMap = (Map<String, Integer>)redisUtil.stringWithGet("topic_HX_msg");
+                    Map<String, Integer> scadaMessagesMap = (Map<String, Integer>) redisUtil.stringWithGet("topic_HX_msg");
 
                     //todo 业务处理
                     // 检查是否匹配,即门是否完全关闭
 
-                    String closeStatusStr = (String)redisUtil.stringWithGet(automaticDoor.getCloseEnd());
+                    String closeStatusStr = (String) redisUtil.stringWithGet(automaticDoor.getCloseEnd());
                     if (Boolean.parseBoolean(closeStatusStr)) {
                         log.info("自动门{}已经完全关闭，任务结束!", automaticDoor.getEquipmentCode());
                         return true;
                     }
 
                     if (HXPositionNumConstant.OVEN_1_NUMBER.equals(automaticDoor.getEquipmentCode())) {
-                        if (((scadaMessagesMap.get(HXPositionNumConstant.OVEN_1_DOOR_1_CLOSE_END_1)== 1)
-                                || (scadaMessagesMap.get(HXPositionNumConstant.OVEN_1_DOOR_1_CLOSE_END_2)== 1))
-                                && (((scadaMessagesMap.get(HXPositionNumConstant.OVEN_1_DOOR_2_CLOSE_END_1)== 1))
-                                || (scadaMessagesMap.get(HXPositionNumConstant.OVEN_1_DOOR_2_CLOSE_END_2)== 1))) {
+                        if (((scadaMessagesMap.get(HXPositionNumConstant.OVEN_1_DOOR_1_CLOSE_END_1) == 1)
+                                || (scadaMessagesMap.get(HXPositionNumConstant.OVEN_1_DOOR_1_CLOSE_END_2) == 1))
+                                && (((scadaMessagesMap.get(HXPositionNumConstant.OVEN_1_DOOR_2_CLOSE_END_1) == 1))
+                                || (scadaMessagesMap.get(HXPositionNumConstant.OVEN_1_DOOR_2_CLOSE_END_2) == 1))) {
                             log.info("自动门已经完全关闭，任务结束!");
                             return true;
                         }
                     } else if (HXPositionNumConstant.OVEN_2_NUMBER.equals(automaticDoor.getEquipmentCode())) {
-                        if (((scadaMessagesMap.get(HXPositionNumConstant.OVEN_2_DOOR_1_CLOSE_END_1)== 1)
-                                || (scadaMessagesMap.get(HXPositionNumConstant.OVEN_2_DOOR_1_CLOSE_END_2)== 1))
-                                && (((scadaMessagesMap.get(HXPositionNumConstant.OVEN_2_DOOR_2_CLOSE_END_1)== 1))
-                                || (scadaMessagesMap.get(HXPositionNumConstant.OVEN_2_DOOR_2_CLOSE_END_2)== 1))) {
+                        if (((scadaMessagesMap.get(HXPositionNumConstant.OVEN_2_DOOR_1_CLOSE_END_1) == 1)
+                                || (scadaMessagesMap.get(HXPositionNumConstant.OVEN_2_DOOR_1_CLOSE_END_2) == 1))
+                                && (((scadaMessagesMap.get(HXPositionNumConstant.OVEN_2_DOOR_2_CLOSE_END_1) == 1))
+                                || (scadaMessagesMap.get(HXPositionNumConstant.OVEN_2_DOOR_2_CLOSE_END_2) == 1))) {
                             log.info("自动门已经完全关闭，任务结束!");
                             return true;
                         }
@@ -3771,7 +3778,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                     // 检查是否超时
                     if (Duration.between(startTime, Instant.now()).compareTo(timeout) > 0) {
                         log.error("关闭自动门{}超时！", automaticDoor.getEquipmentCode());
-                        setTaskFailData(robotWaybill.getId(), robotWaybill.getId(), robotWaybill.getRobotName(), "关闭自动门" + automaticDoor.getEquipmentCode() +"超时！");
+                        setTaskFailData(robotWaybill.getId(), robotWaybill.getId(), robotWaybill.getRobotName(), "关闭自动门" + automaticDoor.getEquipmentCode() + "超时！");
                         return false;
                     }
 
@@ -3781,7 +3788,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         log.error("关闭自动门{}轮询被中断！", automaticDoor.getEquipmentCode());
-                        setTaskFailData(robotWaybill.getId(), robotWaybill.getId(), robotWaybill.getRobotName(), "关闭自动门" + automaticDoor.getEquipmentCode() +"轮询被中断！");
+                        setTaskFailData(robotWaybill.getId(), robotWaybill.getId(), robotWaybill.getRobotName(), "关闭自动门" + automaticDoor.getEquipmentCode() + "轮询被中断！");
                         return false;
                     }
                 }
@@ -3800,7 +3807,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                             }
                         }
                     }
-                } catch(Exception e){
+                } catch (Exception e) {
                     log.error("自动门处理发生异常: ", e);
                     setTaskFailData(robotWaybill.getId(), robotWaybill.getId(), robotWaybill.getRobotName(), "自动门处" + automaticDoor.getEquipmentCode() + "理发生异常！");
                     return false;
@@ -4017,7 +4024,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                                             () -> {
                                                 try {
                                                     //下发充电指令功能
-                                                    log.info("开启自动充电桩{}",robotChargePile.getChargePileIp());
+                                                    log.info("开启自动充电桩{}", robotChargePile.getChargePileIp());
                                                     TcpClientThread.sendHexMsg(robotChargePile.getChargePileIp(), PortConstant.CHARGE_PILE_START, ProtocolConstant.CHARGE_PILE_START);
                                                 } catch (Exception e) {
                                                     log.error("开启智能充电桩失败");
@@ -4100,7 +4107,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                                 //到达子任务终点，释放被锁的开始站点，锁住当前站点
                                 RobotLockPathAndPoint robotLockPathAndPoint = dmsLockedPointMap.get(robotWaybill.getRobotName());
                                 robotLockPathAndPoint.setLockedPoint(endPoint);
-                                dmsLockedPointMap.put(robotWaybill.getRobotName(),robotLockPathAndPoint);
+                                dmsLockedPointMap.put(robotWaybill.getRobotName(), robotLockPathAndPoint);
                                 //pendingTaskList.size() == 2表明机器人任务执行完成，删除pendingTaskList.remove(0)，使条件满足pendingTaskList.size() = 1时任务完成
                                 if (pendingTaskList.size() == 2) {
                                     //判断开始站点和结束站点所在的区域是否具有自动门，如果有，到达结束站点时，应该关闭开始站点和结束站点所在区域的自动门
@@ -4151,7 +4158,8 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                                         for (IotEquipment iotEquipment : automaticDoorByEquipmentRegion) {
                                             if ("是".equals(iotEquipment.getEquipmentIsInstallDms())) {
                                                 closeAutomaticDoor(robotWaybill, automaticDoorByEquipmentRegion.get(0));
-                                            }                                        }
+                                            }
+                                        }
                                         //判断结束区域是否存在内部不能安装光通信站的自动门,如果存在，则等机器人到达门口前光通信站开启自动门
                                         List<IotEquipment> automaticDoorByEndPoint = ioTEquipmentService.getAutomaticDoorByEquipmentRegion(path.getEndPoint());
                                         for (IotEquipment iotEquipment : automaticDoorByEndPoint) {
@@ -4175,7 +4183,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                                 //如果由MES下发的指令，则同步完成状态给MES系统;如果是WMS系统，则同步完成状态给WMS系统
                                 completeTaskSyncToOtherSystem(robotWaybill.getMesWaybillId(), robotWaybill.getWmsWaybillId());
                                 //
-                            } else if (model.getTasklistStatus().getTaskListStatus() == 404 && queryExecutedConcurrentHashMap.get(robotWaybill.getRobotName())){
+                            } else if (model.getTasklistStatus().getTaskListStatus() == 404 && queryExecutedConcurrentHashMap.get(robotWaybill.getRobotName())) {
                                 String strAction = "{\"task_list_name\":\"" + robotWaybill.getRobotName() + "action" + "_" + robotWaybill.getId() + endPoint + "\",\"with_robot_status\":true}";
                                 String dataAction = DataConvertUtil.convertStringToHex(strAction);
                                 String dataLengthAction = Integer.toHexString(dataAction.length() / 2);
@@ -4280,6 +4288,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
 
     /**
      * 查询任务链执行结果指令
+     *
      * @param robotWaybill
      * @return
      * @throws IOException
@@ -4314,6 +4323,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
 
     /**
      * 执行光通信区域的动作
+     *
      * @param robotWaybill
      * @throws Exception
      */
@@ -4367,8 +4377,8 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                 e.printStackTrace();
             }
             EntityResult result = TcpClientThread.sendHexMsg(currentDmsIp, dmsPort, instruction);
-            log.info("执行区域内动作任务:{}",JSON.toJSONString(robotTaskListDTO));
-            log.info("执行区域内动作的光通信站IP：{},光通信站port：{},光通信任务指令执行结果：{}",currentDmsIp, dmsPort, result);
+            log.info("执行区域内动作任务:{}", JSON.toJSONString(robotTaskListDTO));
+            log.info("执行区域内动作的光通信站IP：{},光通信站port：{},光通信任务指令执行结果：{}", currentDmsIp, dmsPort, result);
             if (!result.isSuccess()) {
                 //连接获取机器人导航状态的端口
                 robotBasicInfoService.connectTcp(currentDmsIp, dmsPort);
@@ -4473,7 +4483,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
             //开始请求路径规划算法执行
             log.info("开始请求路径规划算法,请求的任务：{}", JSON.toJSONString(robotPathList));
             AlgorithmRequestResDTO algorithmRequestResDTO = robotTaskService.startPathPlanningTask(pathList, robotPathList, null);
-            log.info("开始请求路径规划算法,请求的路径{}",JSON.toJSONString(pathList));
+            log.info("开始请求路径规划算法,请求的路径{}", JSON.toJSONString(pathList));
             if ("success".equals(algorithmRequestResDTO.getStatus())) {
                 //监测路径规划算法的结果是否返回
                 String cron = "*/3 * * * * ?";
@@ -4486,7 +4496,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                                 runPathPlanningTaskDms(algorithmRequestResDTO.getTaskId(), waybillId, false);
                             } catch (Exception e) {
                                 //如果查询到算法执行返回的结果，则删除定时任务
-                                log.error("开启线程,运行光通信多机器人导航任务，错误信息{}",e);
+                                log.error("开启线程,运行光通信多机器人导航任务，错误信息{}", e);
                                 //更新运单执行结果
                                 setWaybillResult(finalRobotWaybill, RobotWaybillStatusEnum.TERMINATE.getCode(), "运行光通信任务失败!");
                                 //如果由MES下发的指令，则同步完成状态给MES系统;如果是WMS系统，则同步完成状态给WMS系统
@@ -4508,6 +4518,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
 
     /**
      * 运行任务链指令
+     *
      * @param robotWaybill
      * @param dmsIp
      * @param currentExecuteTaskList
@@ -4742,7 +4753,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
      *
      * @param list
      * @param robotWaybill
-     * @param flag flag == 1 当前任务链站点；flag == 2 执行任务链动作； flag == 3当前站点中心点
+     * @param flag         flag == 1 当前任务链站点；flag == 2 执行任务链动作； flag == 3当前站点中心点
      * @return
      */
     public RobotTaskListDTO encapsulatingSubTaskChain(List<RobotRunDTO> list, RobotWaybill robotWaybill, Integer flag) throws IOException {
@@ -4922,7 +4933,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
         //注意：这里的名字必须是字母、数字和下划线组成，其它则会导致错误（这里使用id任务链的名字），后面加上机器人导航的终点点位用来定义当前任务链名称
         if (flag == 1) {
             taskListDTO.setName(robotWaybill.getRobotName() + "_" + robotWaybill.getId() + list.get(list.size() - 1).getStation());
-        } else if (flag == 2){
+        } else if (flag == 2) {
             //获取子任务结束站点
             String endPoint = getAreaCenterPointByCurrentPoint(list.get(list.size() - 1).getStation());
             taskListDTO.setName(robotWaybill.getRobotName() + "action" + "_" + robotWaybill.getId() + endPoint);
@@ -4938,6 +4949,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
 
     /**
      * 封装自定义动作
+     *
      * @param list
      * @param robotWaybill
      * @param flag
@@ -4949,7 +4961,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
         //注意：这里的名字必须是字母、数字和下划线组成，其它则会导致错误（这里使用id任务链的名字），后面加上机器人导航的终点点位用来定义当前任务链名称
         if (flag == 1) {
             taskListDTO.setName(robotWaybill.getRobotName() + "_" + robotWaybill.getId() + list.get(list.size() - 1).getStation());
-        } else if (flag == 2){
+        } else if (flag == 2) {
             //获取子任务结束站点
             String endPoint = getAreaCenterPointByCurrentPoint(list.get(list.size() - 1).getStation());
             taskListDTO.setName(robotWaybill.getRobotName() + "action" + "_" + robotWaybill.getId() + endPoint);
@@ -9635,7 +9647,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
         log.info("开始请求路径规划算法,请求的任务：{}", JSON.toJSONString(robotPathList));
         AlgorithmRequestResDTO algorithmRequestResDTO = robotTaskService.startPathPlanningTask(pathList, robotPathList, null);
         log.info("pathList{}", JSON.toJSONString(pathList));
-        log.info("开始请求路径规划算法,请求的路径{}",JSON.toJSONString(pathList));
+        log.info("开始请求路径规划算法,请求的路径{}", JSON.toJSONString(pathList));
         if ("success".equals(algorithmRequestResDTO.getStatus())) {
             //监测路径规划算法的结果是否返回
             String cron = "*/1 * * * * ?";
@@ -9687,7 +9699,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                 setTaskFailData(waybillId, waybillId, robotWaybill.getRobotName(), "执行路径规划算法失败");
             } else {
                 List<AlgorithmResResultDTO> list = JSON.parseArray(pathPlanning.getResult(), AlgorithmResResultDTO.class);
-                log.info("完成路径规划算法请求,请求的结果{}",JSON.toJSONString(list));
+                log.info("完成路径规划算法请求,请求的结果{}", JSON.toJSONString(list));
                 //开启新的路径规划之前，关闭之前的任务线程
                 ThreadGroup currentGroup = Thread.currentThread().getThreadGroup();
                 int noThreads = currentGroup.activeCount();
@@ -9713,6 +9725,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
 
     /**
      * 运行路径规划光通信任务
+     *
      * @param taskId
      * @param waybillId
      * @throws Exception
@@ -9734,7 +9747,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                 setTaskFailData(waybillId, waybillId, robotWaybill.getRobotName(), "执行路径规划算法失败");
             } else {
                 List<AlgorithmResResultDTO> list = JSON.parseArray(pathPlanning.getResult(), AlgorithmResResultDTO.class);
-                log.info("完成路径规划算法请求,请求的结果{}",JSON.toJSONString(list));
+                log.info("完成路径规划算法请求,请求的结果{}", JSON.toJSONString(list));
                 //开启新的路径规划之前，关闭之前的任务线程
                 ThreadGroup currentGroup = Thread.currentThread().getThreadGroup();
                 int noThreads = currentGroup.activeCount();
@@ -9747,14 +9760,14 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                         //只关闭将要执行任务的机器人
                         if (threadName.startsWith("pathPlanningThread" + robotWaybill.getRobotName())) {
                             //强制关闭线程
-                            log.info("关闭了执行任务的线程{}",threadName);
+                            log.info("关闭了执行任务的线程{}", threadName);
                             lstThreads[i].stop();
                         }
                     } else {
                         //关闭全部执行任务的机器人线程
                         if (threadName.startsWith("pathPlanningThread")) {
                             //强制关闭线程
-                            log.info("关闭了执行任务的线程{}",threadName);
+                            log.info("关闭了执行任务的线程{}", threadName);
                             lstThreads[i].stop();
                         }
                     }
@@ -9784,6 +9797,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
 
     /**
      * 获取当前机器人锁定的路径和点位信息
+     *
      * @param vehicle
      * @return
      */
@@ -9794,6 +9808,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
 
     /**
      * 异常机器人复位后解除该机器人的路径和点位占用
+     *
      * @param vehicle
      * @return
      */
@@ -9951,6 +9966,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
     /**
      * <运行子任务中的起始点到终点的导航任务> leo update
      * 开启多个线程执行光通信任务
+     *
      * @param list
      * @return
      */
@@ -10082,8 +10098,8 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                                 }
 
                                 //获取机器人执行单步骤任务的起始点和终点，这里的起点和终点是区域中心点（光通信站点）
-                                String frontBeginPort = pathPlanning.get(j-1).getStartPoint();
-                                String frontEndPort = pathPlanning.get(j-1).getEndPoint();
+                                String frontBeginPort = pathPlanning.get(j - 1).getStartPoint();
+                                String frontEndPort = pathPlanning.get(j - 1).getEndPoint();
                                 List<IotEquipment> frontAutomaticDoorByEquipmentRegion = ioTEquipmentService.getAutomaticDoorByEquipmentRegion(frontBeginPort);
                                 for (IotEquipment frontIotEquipment : frontAutomaticDoorByEquipmentRegion) {
                                     List<String> adjacentSites;
@@ -10142,7 +10158,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
                                                 RobotWaybill robotWaybillVehicleIdFirst = getWaybillByRobotNameAndTaskStatus(vehicleIdFirst, 1);
                                                 //先锁定该站点的机器人应当执行完成光通信区域内的动作任务；
                                                 if (vehicleIdFirst != null && robotWaybillVehicleIdFirst != null && modelLockedVehicleId.getRetCode() == 0 && modelLockedVehicleId.getTasklistStatus().getTaskListStatus() == 4
-                                                        && (vehicleIdFirst + "action" + "_"  + robotWaybillVehicleIdFirst.getId() + endPort).equals(modelLockedVehicleId.getTasklistStatus().getTaskListName())
+                                                        && (vehicleIdFirst + "action" + "_" + robotWaybillVehicleIdFirst.getId() + endPort).equals(modelLockedVehicleId.getTasklistStatus().getTaskListName())
                                                         && (robot.getVehicleId() + "_" + waybillId + beginPort).equals(model.getTasklistStatus().getTaskListName())) {
                                                     log.info("--------调度系统重新规划了机器人运行路径-----------");
                                                     log.info("请求的机器人[{}],起点[{}]，终点[{}]", robot.getVehicleId(), beginPort, endPort);
@@ -10675,7 +10691,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
         //开始请求路径规划算法执行
         log.info("开始请求路径规划算法,请求的任务：{}", JSON.toJSONString(robotPathList));
         AlgorithmRequestResDTO algorithmRequestResDTO = robotTaskService.startPathPlanningTask(pathList, robotPathList, null);
-        log.info("开始请求路径规划算法,请求的路径{}",JSON.toJSONString(pathList));
+        log.info("开始请求路径规划算法,请求的路径{}", JSON.toJSONString(pathList));
         if ("success".equals(algorithmRequestResDTO.getStatus())) {
             String cron = "*/1 * * * * ?";
             customScheduledTaskRegistrar.addTriggerTask(
@@ -10737,7 +10753,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
         //开始请求路径规划算法执行
         log.info("开始请求路径规划算法,请求的任务：{}", JSON.toJSONString(robotPathList));
         AlgorithmRequestResDTO algorithmRequestResDTO = robotTaskService.startPathPlanningTask(pathList, robotPathList, null);
-        log.info("开始请求路径规划算法,请求的路径{}",JSON.toJSONString(pathList));
+        log.info("开始请求路径规划算法,请求的路径{}", JSON.toJSONString(pathList));
         if ("success".equals(algorithmRequestResDTO.getStatus())) {
             String cron = "*/2 * * * * ?";
             customScheduledTaskRegistrar.addTriggerTask(
