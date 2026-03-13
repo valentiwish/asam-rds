@@ -58,7 +58,7 @@ export default {
             waybill: {
                 id: '',
                 taskId: '',
-                taskName:'',
+                taskName: '',
                 robotName: '',
                 robotGroupName: '',
                 communicationType: '',
@@ -122,12 +122,12 @@ export default {
                 // highlightRow: true,//可以选中某一行
                 data: [],
                 columns: [ //列配置
-                    { "title": "序号", "key": "serialNumber", "align": "center", "width": "80px"},
+                    { "title": "序号", "key": "serialNumber", "align": "center", "width": "80px" },
                     { "title": "任务名称", "key": "taskName", "align": "center" },
                     { "title": "机器人", "key": "robotName", "align": "center" },
-                    { "title": "分组", "key": "robotGroupName", "align": "center", "width": "100px"},
-                    { "title": "通信方式", "key": "communicationType", "align": "center","width": "150px"},
-                    { "title": "优先级", "key": "priority", "align": "center", "width": "150px"},
+                    { "title": "分组", "key": "robotGroupName", "align": "center", "width": "100px" },
+                    { "title": "通信方式", "key": "communicationType", "align": "center", "width": "150px" },
+                    { "title": "优先级", "key": "priority", "align": "center", "width": "150px" },
                     {
                         "title": "状态", "key": "waybillStatus", "align": "center", "width": "150px",
                         "render": function (h, p) {
@@ -151,7 +151,7 @@ export default {
                                 4: {
                                     name: "取消",
                                     color: "magenta"
-                                }, 
+                                },
                                 5: {
                                     name: "等待放行",
                                     color: "green"
@@ -178,7 +178,7 @@ export default {
                     // { "title": "创建时间", "key": "createTime", "align": "center"}, 
                     { "title": "接单时间", "key": "orderTime", "align": "center" },
                     { "title": "完成时间", "key": "completeTime", "align": "center" },
-                    { "title": "执行耗时", "key": "executionTime", "align": "center", "width": "100px"},
+                    { "title": "执行耗时", "key": "executionTime", "align": "center", "width": "100px" },
                     {
                         "key": 'id', title: '操作', "align": "center", "width": "450px",
                         render(h, params) {
@@ -364,6 +364,7 @@ export default {
         },
         //暂停导航
         pauseNav: function (obj) {
+            let that = this;
             this.$Modal.confirm({
                 title: '取消导航',
                 content: '要取消当前导航吗？',
@@ -377,6 +378,22 @@ export default {
                                 this.$Message.error(res.data.msg);
                             } else {
                                 this.$Message.success('任务取消成功');
+                                this.$Message.warning({
+                                    duration: 10,
+                                    render: h => {
+                                        return h(
+                                            'span',
+                                            {
+                                                style: {
+                                                    fontSize: '18px',
+                                                    fontWeight: 'bold',
+                                                    lineHeight: '1.6'
+                                                }
+                                            },
+                                            '请及时将AGV调回待命点，返回待命点后在【机器人管理】中点击该机器人的“释放点区”按钮'
+                                        );
+                                    }
+                                });
                             }
                         })
                         .catch((error) => {
@@ -405,8 +422,8 @@ export default {
                 }
             })
         },
-         //返回待命点导航
-         backParkPoint: function (obj) {
+        //返回待命点导航
+        backParkPoint: function (obj) {
             this.$Modal.confirm({
                 title: '返回待命点',
                 content: '要返回待命点吗？',
@@ -450,13 +467,13 @@ export default {
                     }
                 })
         },
-        getTaskView: function(obj){
+        getTaskView: function (obj) {
             // this.taskId = obj.taskId;
             // this.$router.push({
             //     path: '/agv/task/',
             //     query: {data: obj}
             // });
-            console.log("obj.taskId",obj.taskId)
+            console.log("obj.taskId", obj.taskId)
             this.$router.push("/agv/task/" + obj.taskId);
 
         },

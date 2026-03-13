@@ -28,8 +28,8 @@ module.exports = {
         pathRewrite: {
           "^/service_user/": "/"
         },
-        // target: 'http://192.168.13.228:8081',
-        target: 'http://192.168.13.114:8081',
+        target: 'http://192.168.13.228:8081',
+        // target: 'http://192.168.13.114:8081',
         prependPath:true,
         changeOrigin: true
       },

@@ -6886,7 +6886,7 @@ public class RobotWaybillServiceImpl extends ServiceImpl<RobotWaybillDao, RobotW
         final CountDownLatch existingLatch = robotLatchByDoorMap.putIfAbsent(robotId, doorLatch);
         // 若电梯门未打开，门闩不会释放，不为null，则会跳过后续步骤，避免重复处理
         if (existingLatch != null) {
-            log.info("机器人 {} 已在自动门等待队列", robotId);
+            log.info("机器人 {} 已在电梯门等待队列", robotId);
             // 已有处理中的等待电梯开门
             return null;
         }
